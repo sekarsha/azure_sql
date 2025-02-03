@@ -41,26 +41,26 @@ async def welcome():
 
 
 # Database connection
-conn = psycopg2.connect(
-    dbname=DB_NAME,
-    user=DB_USER,
-    password=DB_PASSWORD,
-    host=DB_HOST,
-    port=DB_PORT
-)
+# conn = psycopg2.connect(
+#     dbname=DB_NAME,
+#     user=DB_USER,
+#     password=DB_PASSWORD,
+#     host=DB_HOST,
+#     port=DB_PORT
+# )
 
 
-@app.get("/customers/{customer_id}")
-def get_customer(customer_id: int):
-    try:
-        with conn.cursor(cursor_factory=RealDictCursor) as cur:
-            cur.execute("SELECT * FROM customer WHERE id = %s;", (customer_id,))
-            customer = cur.fetchone()
-            if not customer:
-                raise HTTPException(status_code=404, detail="Customer not found")
-        return customer
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+# @app.get("/customers/{customer_id}")
+# def get_customer(customer_id: int):
+#     try:
+#         with conn.cursor(cursor_factory=RealDictCursor) as cur:
+#             cur.execute("SELECT * FROM customer WHERE id = %s;", (customer_id,))
+#             customer = cur.fetchone()
+#             if not customer:
+#                 raise HTTPException(status_code=404, detail="Customer not found")
+#         return customer
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))
 
 
 
