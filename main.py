@@ -4,9 +4,22 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
 import os
+import urllib
 load_dotenv()
 
 app=FastAPI()
+
+
+import urllib.parse
+
+DB_HOST = os.environ.get('DB_HOST', 'mypostgres123.postgres.database.azure.com')
+DB_PORT = urllib.parse.quote_plus(str(os.environ.get('DB_PORT', '5432')))
+DB_NAME = os.environ.get('DB_NAME', 'postgres')
+DB_USER = urllib.parse.quote_plus(str(os.environ.get('DB_USER', 'postgresql')))
+DB_PASSWORD = urllib.parse.quote_plus(str(os.environ.get('DB_PASSWORD', 'Sql12345')))
+ssl_mode = urllib.parse.quote_plus(str(os.environ.get('ssl_mode','prefer')))
+DATABASE_URL = 'postgresql://{}:{}@{}:{}/{}?sslmode={}'.format(DB_NAME,DB_PASSWORD, DB_HOST, DB_PORT,DB_NAME, ssl_mode)
+
 
 @app.get("/", response_class=HTMLResponse)
 async def welcome():
@@ -25,13 +38,6 @@ async def welcome():
     </html>
     """
     
-
-DB_NAME=os.getenv("DB_NAME")
-DB_USER=os.getenv("DB_USER")
-DB_PASSWORD=os.getenv("DB_PASSWORD")
-DB_HOST=os.getenv("DB_HOST")
-DB_PORT=os.getenv("DB_PORT")
-DATABASE_URL=os.getenv("DATABASE_URL")
 
 
 # Database connection
