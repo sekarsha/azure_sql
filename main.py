@@ -4,14 +4,28 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
 import os
-import urllib
+
 load_dotenv()
 
 app=FastAPI()
 
 
-import urllib.parse
 
+DATABASE_URL = os.getenv('DATABASE_URL')
+DB_NAME = os.getenv('DB_NAME')
+DB_USER = os.getenv('DB_USER')
+DB_PASSWORD= os.getenv('DB_PASSWORD')
+DB_HOST = os.getenv('DB_HOST')
+DB_PORT = os.getenv('DB_PORT')
+
+conn = psycopg2.connect(
+    dbname=DB_NAME,
+    user=DB_USER,
+    password=DB_PASSWORD,
+    host=DB_HOST,
+    port=DB_PORT,
+    sslmode="require"
+)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -31,16 +45,6 @@ async def welcome():
     </html>
     """
     
-
-conn = psycopg2.connect(
-    dbname='postgres',
-    user='postgresql',
-    password='Sql12345',
-    host='mypostgres123.postgres.database.azure.com',
-    port='5432'
-)
-
-DATABASE_URL = os.getenv('DATABASE_URL')
 
 @app.get("/customers/{customer_id}")
 def get_customer(customer_id: int):
