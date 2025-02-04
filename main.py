@@ -32,19 +32,6 @@ async def welcome():
     """
     
 
-
-# Database connection
-
-# DB_HOST = os.environ.get('DB_HOST', 'mypostgres123.postgres.database.azure.com')
-# DB_PORT = urllib.parse.quote_plus(str(os.environ.get('DB_PORT', '5432')))
-# DB_NAME = os.environ.get('DB_NAME', 'postgres')
-# DB_USER = urllib.parse.quote_plus(str(os.environ.get('DB_USER', 'postgresql')))
-# DB_PASSWORD = urllib.parse.quote_plus(str(os.environ.get('DB_PASSWORD', 'Sql12345')))
-# ssl_mode = urllib.parse.quote_plus(str(os.environ.get('ssl_mode','prefer')))
-# DATABASE_URL = 'postgresql://{}:{}@{}:{}/{}?sslmode={}'.format(DB_NAME,DB_PASSWORD, DB_HOST, DB_PORT,DB_NAME, ssl_mode)
-
-
-
 conn = psycopg2.connect(
     dbname='postgres',
     user='postgresql',
@@ -53,6 +40,7 @@ conn = psycopg2.connect(
     port='5432'
 )
 
+DATABASE_URL = os.getenv('DATABASE_URL')
 
 @app.get("/customers/{customer_id}")
 def get_customer(customer_id: int):
@@ -68,21 +56,21 @@ def get_customer(customer_id: int):
 
 
 
-# def get_connection():
-#     return psycopg2.connect(DATABASE_URL)
+def get_connection():
+    return psycopg2.connect(DATABASE_URL, sslmode="require") 
 
-# @app.get("/customerss/{customer_id}")
-# def get_customer(customer_id: int):
-#     try:
-#         with get_connection() as conn:
-#             with conn.cursor(cursor_factory=RealDictCursor) as cur:
-#                 cur.execute("SELECT * FROM customer WHERE id = %s;", (customer_id,))
-#                 customer = cur.fetchone()
-#                 if not customer:
-#                     raise HTTPException(status_code=404, detail="Customer not found")
-#         return customer
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
+@app.get("/customerss/{customer_id}")
+def get_customer(customer_id: int):
+    try:
+        with get_connection() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("SELECT * FROM customer WHERE id = %s;", (customer_id,))
+                customer = cur.fetchone()
+                if not customer:
+                    raise HTTPException(status_code=404, detail="Customer not found")
+        return customer
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 
